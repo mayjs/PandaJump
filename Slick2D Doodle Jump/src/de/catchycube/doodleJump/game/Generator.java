@@ -26,13 +26,13 @@ public class Generator {
 	public Generator(InGameState state){
 		gameState = state;
 		platformThickness = 12 * state.getTextureScaling();
-		platformWidth = 64 * state.getTextureScaling();
+		platformWidth = 48 * state.getTextureScaling();
 		
 		possiblePlatformsInRow = (int)(state.getGameScreenBoundings().getWidth()/platformWidth);
 		possiblePlatformsFlags = new boolean[possiblePlatformsInRow];
 		
 		SpriteSheet sheet = SpritesheetLoader.getInstance().getSpriteSheet("misc", 64, 64);
-		solidPlatform = sheet.getSprite(2, 1).getSubImage(0, 41, 64, 12);
+		solidPlatform = sheet.getSprite(2, 1).getSubImage(8, 41, 48, 12);
 		
 		rnd = new Random();
 	}
@@ -53,8 +53,6 @@ public class Generator {
 			
 			int newPlatformScore = (int)(nextY*gameState.getScoreFactor());
 			int numberOfPlatforms = getNumberOfPlatforms(newPlatformScore);
-		
-			System.out.println(numberOfPlatforms);
 			
 			LinkedList<Platform> generatedPlatforms = new LinkedList<Platform>();
 			for(int i = 0; i < numberOfPlatforms; i++){
@@ -87,19 +85,19 @@ public class Generator {
 	}
 	
 	private int getMinPlatformInRowCount(int score){
-		return 2;
+		return 1;
 	}
 	
 	private int getMaxPlatformInRowCount(int score){
-		return 2;
+		return 1;
 	}
 	
 	private float getMinimalHeightDifference(float maxJmpHeight, int score){
-		return maxJmpHeight;
+		return maxJmpHeight*(score<100?0.2f:score<500?0.33f:score<800?0.43f:score<1000?0.53f:score<1200?0.63f:score<1500?0.73f:score<2000?0.83f:0.93f);
 	}
 	
 	private float getMaximalHeightDifference(float maxJmpHeight, int score){
-		return maxJmpHeight;
+		return maxJmpHeight*(score<100?0.33f:score<500?0.43f:score<800?0.53f:score<1000?0.63f:score<1200?0.73f:score<1500?0.83f:score<2000?0.93f:1f);
 	}
 	
 	private int getNumberOfPlatforms(int score){

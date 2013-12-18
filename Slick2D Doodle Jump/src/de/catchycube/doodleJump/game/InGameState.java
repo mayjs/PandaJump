@@ -3,6 +3,7 @@ package de.catchycube.doodleJump.game;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.newdawn.slick.Animation;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Font;
 import org.newdawn.slick.GameContainer;
@@ -26,6 +27,7 @@ public class InGameState extends BasicGameState{
 	private Rectangle gameScreenBoundings;
 	private float textureScaling = 2f, cameraHeight = 0f;
 	private LinkedList<Platform> platforms = new LinkedList<Platform>();
+	private LinkedList<Object[]> animations = new LinkedList<Object[]>();
 	private SpriteSheet sheet;
 	private Player player=new Player();
 	private int score;
@@ -34,6 +36,7 @@ public class InGameState extends BasicGameState{
 	private Font font;
 	private float scoreFactor=0.1f;
 	private Generator generator;
+	private List<Platform> platformsToRemove = new LinkedList<Platform>();
 	
 	@Override
 	public void init(GameContainer container, StateBasedGame game)
@@ -52,6 +55,12 @@ public class InGameState extends BasicGameState{
 			if(gameScreenBoundings.getHeight() - platforms.get(i).getHitBounds().getY()+cameraHeight > gameScreenBoundings.getHeight()+2) break;
 			platforms.get(i).draw(cameraHeight, this,g);
 		}
+		for(Object[] obj : animations){
+			Animation anim = (Animation)obj[0];
+			float x = calcRenderX((float)obj[1]);
+			float y = calcRenderY((float)obj[2]);
+			anim.draw(x, y,anim.getWidth() * textureScaling, anim.getHeight() * textureScaling);
+		}
 		player.render(container, game, g);
 		String pointString = "Punkte: " + score;
 		font.drawString(gameScreenBoundings.getMaxX()-font.getWidth(pointString), 0, pointString);
@@ -60,11 +69,30 @@ public class InGameState extends BasicGameState{
 	@Override
 	public void update(GameContainer container, StateBasedGame game, int delta)
 			throws SlickException {
+		for(Platform p : platformsToRemove){
+			platforms.remove(p);
+		}		
+		platformsToRemove.clear();
+		
+		List<Object[]> toRemove = new LinkedList<Object[]>();
+		for(Object[] obj : animations){
+			Animation anim = (Animation)obj[0];
+			anim.update(delta);
+			if(anim.isStopped()){
+				toRemove.add(obj);
+			}
+		} for(Object[] obj : toRemove){
+			animations.remove(obj);
+		}
+		
 		applyCounter+=delta;
-		if(applyCounter > applyMax){
+		if(applyCounter > applyMax){			
 			applyCounter -= applyMax;
 			
 			generator.update();
+			for(Platform p : platforms){
+				p.update();
+			}
 			
 			if(player.canExit()){
 				game.enterState(MainMenu.ID,new FadeOutTransition(Color.black, 1800),null); //TODO: create game over screen
@@ -99,6 +127,7 @@ public class InGameState extends BasicGameState{
 			flip = !flip;
 		}		
 		player.initNewGame(gameScreenBoundings.getCenterX(),gameScreenBoundings.getCenterY());
+		generator.update(); //Pre generate a few platforms
 	}
 
 	@Override
@@ -128,8 +157,16 @@ public class InGameState extends BasicGameState{
 	}
 	
 	public Rectangle calcRenderRect(Rectangle modelRect){
-		return new Rectangle(modelRect.getX(), getGameScreenBoundings().getHeight() - modelRect.getY() + getCameraHeight(),
+		return new Rectangle(calcRenderX(modelRect.getX()), calcRenderY(modelRect.getY()),
 				modelRect.getWidth(), modelRect.getHeight());
+	}
+	
+	public float calcRenderY(float modelY){
+		return gameScreenBoundings.getY() + getGameScreenBoundings().getHeight() - modelY + getCameraHeight();
+	}
+	
+	public float calcRenderX(float modelX){
+		return gameScreenBoundings.getX() + modelX;
 	}
 	
 	public LinkedList<Platform> getAllPlatforms(){
@@ -150,5 +187,13 @@ public class InGameState extends BasicGameState{
 	
 	public void addPlatform(Platform p){
 		platforms.add(p);
+	}
+	
+	public void removePlatform(Platform p){
+		platformsToRemove.add(p);
+	}
+	
+	public void playAnimation(Animation animation, float x, float y){
+		animations.add(new Object[]{animation,x,y});
 	}
 }

@@ -20,7 +20,7 @@ public class Platform {
 
 	}
 	
-	public void update(long delta){
+	public void update(){
 		
 	}
 	

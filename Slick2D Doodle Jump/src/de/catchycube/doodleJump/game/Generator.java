@@ -21,7 +21,7 @@ public class Generator {
 	
 	private Random rnd;
 	
-	private Image solidPlatform;
+	private Image solidPlatform, breakingPlatform;
 
 	public Generator(InGameState state){
 		gameState = state;
@@ -33,6 +33,7 @@ public class Generator {
 		
 		SpriteSheet sheet = SpritesheetLoader.getInstance().getSpriteSheet("misc", 64, 64);
 		solidPlatform = sheet.getSprite(2, 1).getSubImage(8, 41, 48, 12);
+		breakingPlatform = sheet.getSprite(3,0).getSubImage(6, 42, 52, 10);
 		
 		rnd = new Random();
 	}
@@ -63,7 +64,15 @@ public class Generator {
 				
 				Platform p = null;
 				//Select platform type here
-				p = new Platform(platformBoundings, solidPlatform, gameState);
+				if(rnd.nextBoolean())
+					p = new Platform(platformBoundings, solidPlatform, gameState);
+				else{
+					platformBoundings.setWidth(platformWidth + 4 * gameState.getTextureScaling());
+					platformBoundings.setX(platformBoundings.getX() - 2 * gameState.getTextureScaling());
+					platformBoundings.setHeight(platformThickness - 2*gameState.getTextureScaling());
+					platformBoundings.setY(platformBoundings.getY() + gameState.getTextureScaling());
+					p = new BreakingPlatform(platformBoundings, breakingPlatform, gameState);
+				}
 				
 				gameState.addPlatform(p);
 				platforms = gameState.getAllPlatforms();

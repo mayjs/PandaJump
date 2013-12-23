@@ -4,7 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.newdawn.slick.Animation;
-import org.newdawn.slick.Color;
 import org.newdawn.slick.Font;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -15,14 +14,14 @@ import org.newdawn.slick.TrueTypeFont;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
-import org.newdawn.slick.state.transition.FadeOutTransition;
 
-import de.catchycube.doodleJump.base.MainMenu;
+import de.catchycube.doodleJump.gameOver.GameOverState;
 import de.catchycube.doodleJump.loading.SpritesheetLoader;
+import de.catchycube.doodleJump.transition.FixedAlphaFadeOutTransition;
 
 public class InGameState extends BasicGameState{
 
-	private static final int ID = 1;
+	public static final int ID = 1;
 	
 	private Rectangle gameScreenBoundings;
 	private float textureScaling = 2f, cameraHeight = 0f;
@@ -62,8 +61,10 @@ public class InGameState extends BasicGameState{
 			anim.draw(x, y,anim.getWidth() * textureScaling, anim.getHeight() * textureScaling);
 		}
 		player.render(container, game, g);
-		String pointString = "Punkte: " + score;
-		font.drawString(gameScreenBoundings.getMaxX()-font.getWidth(pointString), 0, pointString);
+		if(player.isAlive()){
+			String pointString = "Punkte: " + score;
+			font.drawString(gameScreenBoundings.getMaxX()-font.getWidth(pointString), 0, pointString);
+		}
 	}
 
 	@Override
@@ -95,7 +96,7 @@ public class InGameState extends BasicGameState{
 			}
 			
 			if(player.canExit()){
-				game.enterState(MainMenu.ID,new FadeOutTransition(Color.black, 1800),null); //TODO: create game over screen
+				game.enterState(GameOverState.ID,new FixedAlphaFadeOutTransition(GameOverState.COLOR_OVERLAY, 1800),null); //TODO: create game over screen
 				return;
 			}
 			if(player.isAlive()){
@@ -195,5 +196,9 @@ public class InGameState extends BasicGameState{
 	
 	public void playAnimation(Animation animation, float x, float y){
 		animations.add(new Object[]{animation,x,y});
+	}
+	
+	public int getAmplifiedScore(){
+		return score;
 	}
 }

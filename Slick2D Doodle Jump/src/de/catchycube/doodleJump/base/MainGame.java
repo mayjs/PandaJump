@@ -7,6 +7,7 @@ import org.newdawn.slick.state.GameState;
 import org.newdawn.slick.state.StateBasedGame;
 
 import de.catchycube.doodleJump.game.InGameState;
+import de.catchycube.doodleJump.gameOver.GameOverState;
 import de.catchycube.doodleJump.loading.ImageLoader;
 
 public class MainGame extends StateBasedGame{
@@ -14,7 +15,7 @@ public class MainGame extends StateBasedGame{
 	private static final int xRes=320;
 	private static final float yScale=11f/6f;
 	
-	private GameState gameState, menuState;
+	private GameState gameState, menuState, gameOverState;
 	
 	public MainGame(String name) {
 		super(name);
@@ -31,6 +32,8 @@ public class MainGame extends StateBasedGame{
 		addState(menuState);
 		gameState = new InGameState();
 		addState(gameState);
+		gameOverState = new GameOverState();
+		addState(gameOverState);
 	}
 	
 	public static void main(String[] args) throws SlickException{

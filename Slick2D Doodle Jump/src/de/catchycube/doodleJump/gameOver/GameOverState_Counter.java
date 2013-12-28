@@ -12,7 +12,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import de.catchycube.doodleJump.game.InGameState;
 
-public class GameOverState extends BasicGameState{
+public class GameOverState_Counter extends BasicGameState{
 
 	public static final int ID = 2;
 	
@@ -20,16 +20,19 @@ public class GameOverState extends BasicGameState{
 	
 	private float scoreFactor = 0.1f;
 	private int updateCounter, updateAt=40;
-	private int scoreToRender, totalScore;
+	private int scoreToRender, totalScore, scoreCounterTime=3400, scoreStep;
 	private InGameState state;
 	private Font font;
 	private Color staticTextColor=Color.white;
+	
+	private StateBasedGame game;
 	
 	@Override
 	public void init(GameContainer container, StateBasedGame game)
 			throws SlickException {
 		state = (InGameState)game.getState(InGameState.ID);
 		font = new TrueTypeFont(new java.awt.Font("verdana", java.awt.Font.BOLD, 20), true);
+		this.game = game;
 	}
 
 	@Override
@@ -48,8 +51,11 @@ public class GameOverState extends BasicGameState{
 	public void update(GameContainer container, StateBasedGame game, int delta)
 			throws SlickException {
 		for(updateCounter += delta; updateCounter >= updateAt && stillCounting(); updateCounter -= updateAt){
-			scoreToRender+=(int)(scoreFactor*updateAt)+1;
-			if(scoreToRender > totalScore) scoreToRender = totalScore;
+			scoreToRender+=scoreStep;
+			if(scoreToRender >= totalScore){
+				scoreToRender = totalScore;
+				game.enterState(GameOverState_Input.ID);
+			}
 		}
 	}
 
@@ -63,11 +69,16 @@ public class GameOverState extends BasicGameState{
 		updateCounter = 0;
 		scoreToRender=0;
 		totalScore = state.getAmplifiedScore();
+		scoreStep=totalScore*updateAt/scoreCounterTime;
+		if(scoreStep==0)scoreStep=1;
 	}
 	
 	@Override
 	public void keyPressed(int key, char c){
-		if(key == Input.KEY_ENTER) scoreToRender = totalScore;
+		if(key == Input.KEY_ENTER){
+			scoreToRender = totalScore;
+			game.enterState(GameOverState_Input.ID);
+		}
 	}
 	
 	private boolean stillCounting(){

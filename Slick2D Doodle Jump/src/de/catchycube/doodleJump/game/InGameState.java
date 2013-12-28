@@ -15,7 +15,9 @@ import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
-import de.catchycube.doodleJump.gameOver.GameOverState;
+import de.catchycube.doodleJump.base.MainGame;
+import de.catchycube.doodleJump.debug.DebugInfo;
+import de.catchycube.doodleJump.gameOver.GameOverState_Counter;
 import de.catchycube.doodleJump.loading.SpritesheetLoader;
 import de.catchycube.doodleJump.transition.FixedAlphaFadeOutTransition;
 
@@ -36,6 +38,9 @@ public class InGameState extends BasicGameState{
 	private float scoreFactor=0.1f;
 	private Generator generator;
 	private List<Platform> platformsToRemove = new LinkedList<Platform>();
+	private MainGame game;
+	
+	private LinkedList<Integer[]> placesInDebugToClear = new LinkedList<Integer[]>();
 	
 	@Override
 	public void init(GameContainer container, StateBasedGame game)
@@ -45,6 +50,7 @@ public class InGameState extends BasicGameState{
 		font = new TrueTypeFont(new java.awt.Font("verdana", java.awt.Font.BOLD, 20), true);
 		player.init(container, game, this);
 		generator = new Generator(this);
+		this.game = (MainGame) game;
 	}
 
 	@Override
@@ -96,7 +102,7 @@ public class InGameState extends BasicGameState{
 			}
 			
 			if(player.canExit()){
-				game.enterState(GameOverState.ID,new FixedAlphaFadeOutTransition(GameOverState.COLOR_OVERLAY, 1800),null); //TODO: create game over screen
+				game.enterState(GameOverState_Counter.ID,new FixedAlphaFadeOutTransition(GameOverState_Counter.COLOR_OVERLAY, 1800),null); //TODO: create game over screen
 				return;
 			}
 			if(player.isAlive()){
@@ -200,5 +206,31 @@ public class InGameState extends BasicGameState{
 	
 	public int getAmplifiedScore(){
 		return score;
+	}
+	
+	@Override
+	public void enter(GameContainer container, StateBasedGame game) throws SlickException {
+		DebugInfo info = this.game.getDebugInfo();
+		Integer[] coordsForPlatCount = info.getFirstFree();
+		try {
+			info.set(coordsForPlatCount[0], coordsForPlatCount[1], new Object[]{"Platformen: ",new Object[]{InGameState.class.getMethod("getPlatformCount"),this}});
+		} catch (NoSuchMethodException | SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		placesInDebugToClear.clear();
+		placesInDebugToClear.add(coordsForPlatCount);
+	}
+	
+	@Override
+	public void leave(GameContainer container, StateBasedGame game) throws SlickException {
+		DebugInfo info = this.game.getDebugInfo();
+		for(Integer[] coords : placesInDebugToClear){
+			info.set(coords[0], coords[1], null);
+		}
+	}
+	
+	public int getPlatformCount(){
+		return platforms.size();
 	}
 }

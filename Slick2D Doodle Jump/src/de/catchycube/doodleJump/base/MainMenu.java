@@ -16,6 +16,7 @@ import org.newdawn.slick.state.transition.FadeInTransition;
 import org.newdawn.slick.state.transition.FadeOutTransition;
 
 import de.catchycube.doodleJump.game.InGameState;
+import de.catchycube.doodleJump.highscore.HighscoreState;
 import de.catchycube.doodleJump.loading.SpritesheetLoader;
 
 public class MainMenu extends BasicGameState{
@@ -94,6 +95,8 @@ public class MainMenu extends BasicGameState{
 		} else if(command.equals(CMD_NEW_GAME)){
 			((InGameState)((MainGame)game).getIngameState()).initNewGame();
 			game.enterState(((MainGame)game).getIngameState().getID(), new FadeOutTransition(), new FadeInTransition());
+		} else if(command.equals(CMD_HIGHSCORE)){
+			game.enterState(HighscoreState.ID);
 		}
 	}
 }

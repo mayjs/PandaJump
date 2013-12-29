@@ -20,7 +20,8 @@ public class GameOverState_Counter extends BasicGameState{
 	
 	private float scoreFactor = 0.1f;
 	private int updateCounter, updateAt=40;
-	private int scoreToRender, totalScore, scoreCounterTime=3400, scoreStep;
+	private int scoreToRender, scoreCounterTime=3400, scoreStep;
+	protected int totalScore;
 	private InGameState state;
 	private Font font;
 	private Color staticTextColor=Color.white;
@@ -83,5 +84,9 @@ public class GameOverState_Counter extends BasicGameState{
 	
 	private boolean stillCounting(){
 		return scoreToRender < totalScore;
+	}
+	
+	public int getTotalScore(){
+		return totalScore;
 	}
 }

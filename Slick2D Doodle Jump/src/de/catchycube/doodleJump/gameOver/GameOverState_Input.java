@@ -16,6 +16,7 @@ import org.newdawn.slick.state.transition.FadeInTransition;
 import org.newdawn.slick.state.transition.FadeOutTransition;
 
 import de.catchycube.doodleJump.base.MainMenu;
+import de.catchycube.doodleJump.highscore.HighscoreState;
 import de.catchycube.doodleJump.transition.FixedAlphaFadeOutTransition;
 
 public class GameOverState_Input extends BasicGameState{
@@ -75,8 +76,11 @@ public class GameOverState_Input extends BasicGameState{
 	}
 	
 	private void confirm(){
-		//TODO: Once its implemented, save the score to the Highscore
-		game.enterState(MainMenu.ID, new FixedAlphaFadeOutTransition(Color.black, GameOverState_Counter.COLOR_OVERLAY.a, 1, 180),new FadeInTransition());
+		
+//		game.enterState(MainMenu.ID, new FixedAlphaFadeOutTransition(Color.black, GameOverState_Counter.COLOR_OVERLAY.a, 1, 180),new FadeInTransition());
+		HighscoreState state = (HighscoreState)game.getState(HighscoreState.ID);
+		state.highlight(state.add(inputString, ((GameOverState_Counter) counterState).getTotalScore()));
+		game.enterState(HighscoreState.ID);
 	}
 	
 	private void remove(){

@@ -122,7 +122,7 @@ public class InGameState extends BasicGameState{
 	public void initNewGame(){
 		cameraHeight = 0f;
 		platforms.clear();
-		
+		score = 0;
 		
 		Image unflipped = sheet.getSprite(2, 1).getSubImage(0, 41, 64, 12);
 		Image flipped = unflipped.getFlippedCopy(true, false);

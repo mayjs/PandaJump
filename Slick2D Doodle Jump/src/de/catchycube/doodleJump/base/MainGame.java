@@ -11,6 +11,7 @@ import de.catchycube.doodleJump.debug.DebugInfo;
 import de.catchycube.doodleJump.game.InGameState;
 import de.catchycube.doodleJump.gameOver.GameOverState_Counter;
 import de.catchycube.doodleJump.gameOver.GameOverState_Input;
+import de.catchycube.doodleJump.highscore.HighscoreState;
 import de.catchycube.doodleJump.loading.ImageLoader;
 
 public class MainGame extends StateBasedGame{
@@ -18,7 +19,7 @@ public class MainGame extends StateBasedGame{
 	private static final int xRes=320;
 	private static final float yScale=11f/6f;
 	
-	private GameState gameState, menuState, gameOverState_Counter, gameOverState_Input;
+	private GameState gameState, menuState, gameOverState_Counter, gameOverState_Input, highScoreState;
 	private DebugInfo info;
 	
 	public MainGame(String name) {
@@ -46,6 +47,8 @@ public class MainGame extends StateBasedGame{
 		addState(gameOverState_Counter);
 		gameOverState_Input = new GameOverState_Input();
 		addState(gameOverState_Input);
+		highScoreState = new HighscoreState();
+		addState(highScoreState);
 	}
 	
 	@Override

@@ -182,7 +182,7 @@ public class Player implements KeyListener{
 
 	@Override
 	public void keyPressed(int key, char c) {
-		if(Input.KEY_SPACE == key){
+		if(Input.KEY_DOWN == key){
 			sitting = true;
 			if(onPlatform){
 				setCurrentSprite(spriteSitting);
@@ -197,7 +197,7 @@ public class Player implements KeyListener{
 
 	@Override
 	public void keyReleased(int key, char c) {
-		if(Input.KEY_SPACE == key){
+		if(Input.KEY_DOWN == key){
 			sitting = false;
 		}
 		else if((Input.KEY_RIGHT == key && movement == constantMovement)||

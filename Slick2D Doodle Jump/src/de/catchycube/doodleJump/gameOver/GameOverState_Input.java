@@ -79,8 +79,12 @@ public class GameOverState_Input extends BasicGameState{
 		
 //		game.enterState(MainMenu.ID, new FixedAlphaFadeOutTransition(Color.black, GameOverState_Counter.COLOR_OVERLAY.a, 1, 180),new FadeInTransition());
 		HighscoreState state = (HighscoreState)game.getState(HighscoreState.ID);
-		state.highlight(state.add(inputString, ((GameOverState_Counter) counterState).getTotalScore()));
-		game.enterState(HighscoreState.ID);
+		int n = state.add(inputString, ((GameOverState_Counter) counterState).getTotalScore());
+		state.highlight(n);
+		if(n>=0)
+			game.enterState(HighscoreState.ID);
+		else
+			game.enterState(MainMenu.ID);
 	}
 	
 	private void remove(){

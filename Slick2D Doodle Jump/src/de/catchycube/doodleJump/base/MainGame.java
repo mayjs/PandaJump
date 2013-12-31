@@ -16,8 +16,8 @@ import de.catchycube.doodleJump.loading.ImageLoader;
 
 public class MainGame extends StateBasedGame{
 	
-	private static final int xRes=320;
-	private static final float yScale=11f/6f;
+	private static final int xRes=640;
+	private static final float yScale=4f/3f;
 	
 	private GameState gameState, menuState, gameOverState_Counter, gameOverState_Input, highScoreState;
 	private DebugInfo info;

@@ -1,5 +1,7 @@
 package de.catchycube.doodleJump.base;
 
+import java.io.File;
+
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -26,8 +28,16 @@ public class MainGame extends StateBasedGame{
 	
 	public MainGame(String name) {
 		super(name);
+		
+		this.ensureExistanceOfDirectories(DATA_BASEDIR);
 	}
 
+	private void ensureExistanceOfDirectories(String... dirs){
+		for(String s : dirs){
+			File f = new File(s);
+			f.mkdirs();
+		}
+	}
 
 
 	@Override

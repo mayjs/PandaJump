@@ -68,6 +68,20 @@ public class Highscore implements Serializable{
 			objStream.close();
 			stream.close();
 		} catch (IOException | ClassNotFoundException e) {
+			new Highscore().save(standardFileName);
+			score = loadAR(standardFileName);
+		}
+		return score;
+	}
+	private static Highscore loadAR(String fileName){
+		Highscore score = null;
+		try {
+			InputStream stream = new FileInputStream(new File(fileName));
+			ObjectInputStream objStream = new ObjectInputStream(stream);
+			score = (Highscore)objStream.readObject();
+			objStream.close();
+			stream.close();
+		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 		return score;

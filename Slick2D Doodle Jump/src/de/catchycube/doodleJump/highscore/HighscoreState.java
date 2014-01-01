@@ -1,6 +1,7 @@
 package de.catchycube.doodleJump.highscore;
 
 
+import java.io.File;
 import java.util.List;
 
 import org.newdawn.slick.Color;
@@ -30,10 +31,11 @@ public class HighscoreState extends BasicGameState{
 			throws SlickException {
 		this.game = game;
 		font = new TrueTypeFont(new java.awt.Font("verdana", java.awt.Font.BOLD, 20), true);
-		highscore = new Highscore();
-		highscore.setMaximalNumberOfEntries(3);
 		
-		
+		highscore = Highscore.load(Highscore.standardFileName);
+		if(highscore==null){
+			highscore = new Highscore();
+		}	
 	}
 
 	@Override

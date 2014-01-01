@@ -1,6 +1,8 @@
 package de.catchycube.doodleJump.highscore;
 
-public class HighscoreEntry implements Comparable<HighscoreEntry>{
+import java.io.Serializable;
+
+public class HighscoreEntry implements Comparable<HighscoreEntry>, Serializable{
 
 	private int score;
 	private String name;

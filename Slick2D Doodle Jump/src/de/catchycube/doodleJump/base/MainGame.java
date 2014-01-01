@@ -22,6 +22,8 @@ public class MainGame extends StateBasedGame{
 	private GameState gameState, menuState, gameOverState_Counter, gameOverState_Input, highScoreState;
 	private DebugInfo info;
 	
+	public static final String DATA_BASEDIR="Data";
+	
 	public MainGame(String name) {
 		super(name);
 	}

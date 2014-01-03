@@ -11,6 +11,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import de.catchycube.doodleJump.debug.DebugInfo;
 import de.catchycube.doodleJump.game.InGameState;
+import de.catchycube.doodleJump.game.pause.PauseGameState;
 import de.catchycube.doodleJump.gameOver.GameOverState_Counter;
 import de.catchycube.doodleJump.gameOver.GameOverState_Input;
 import de.catchycube.doodleJump.highscore.HighscoreState;
@@ -21,7 +22,7 @@ public class MainGame extends StateBasedGame{
 	private static final int xRes=640;
 	private static final float yScale=4f/3f;
 	
-	private GameState gameState, menuState, gameOverState_Counter, gameOverState_Input, highScoreState;
+	private GameState gameState, menuState, gameOverState_Counter, gameOverState_Input, highScoreState, pauseState;
 	private DebugInfo info;
 	
 	public static final String DATA_BASEDIR="Data";
@@ -61,6 +62,8 @@ public class MainGame extends StateBasedGame{
 		addState(gameOverState_Input);
 		highScoreState = new HighscoreState();
 		addState(highScoreState);
+		pauseState = new PauseGameState();
+		addState(pauseState);
 	}
 	
 	@Override

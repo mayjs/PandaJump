@@ -9,19 +9,19 @@ import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.state.transition.Transition;
 
 
-public class FixedAlphaFadeOutTransition implements Transition{
+public class FixedAlphaFadingTransition implements Transition{
 	protected Color color;
 	protected float targetAlpha, beginAlpha;
 	protected int fadeTime;
 	
-	public FixedAlphaFadeOutTransition(Color color, int fadeTime){
+	public FixedAlphaFadingTransition(Color color, int fadeTime){
 		this.fadeTime = fadeTime;
 		this.color = new Color(color);
-		targetAlpha = color.a;
+		targetAlpha = new Float(color.a);
 		this.color.a = 0;
 	}
 	
-	public FixedAlphaFadeOutTransition(Color color, float beginAlpha, float endAlpha, int fadeTime){
+	public FixedAlphaFadingTransition(Color color, float beginAlpha, float endAlpha, int fadeTime){
 		this(color,fadeTime);
 		targetAlpha = endAlpha;
 		this.beginAlpha = beginAlpha;
@@ -29,13 +29,12 @@ public class FixedAlphaFadeOutTransition implements Transition{
 
 	@Override
 	public void init(GameState firstState, GameState secondState) {
-		// TODO Auto-generated method stub
-		
+		color.a = beginAlpha;
 	}
 
 	@Override
 	public boolean isComplete() {
-		return color.a >= targetAlpha;
+		return targetAlpha>beginAlpha?(color.a >= targetAlpha):(color.a <= targetAlpha);
 	}
 
 	@Override
@@ -56,8 +55,9 @@ public class FixedAlphaFadeOutTransition implements Transition{
 	public void update(StateBasedGame game, GameContainer container, int delta)
 			throws SlickException {
 		color.a += delta * ((targetAlpha - beginAlpha) / fadeTime);
-		if (color.a > targetAlpha) {
+		if (isComplete()) {
 			color.a = targetAlpha;
+			System.out.println("Complete");
 		}
 	}
 }

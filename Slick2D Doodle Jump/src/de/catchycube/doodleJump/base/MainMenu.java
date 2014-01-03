@@ -102,7 +102,7 @@ public class MainMenu extends BasicGameState{
 	}
 	
 	public void execute(String command){
-		System.out.println("Executing " + command);
+//		System.out.println("Executing " + command);
 		if(command.equals(CMD_EXIT)){
 			container.exit();
 		} else if(command.equals(CMD_NEW_GAME)){

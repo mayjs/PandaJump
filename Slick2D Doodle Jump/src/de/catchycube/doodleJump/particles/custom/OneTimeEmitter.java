@@ -411,7 +411,7 @@ public class OneTimeEmitter implements ParticleEmitter{
 			f.setAccessible(true);
 		}
 		
-		if(allFieldsConfig.length != allFieldsOneTime.length) System.out.println("Warning: ConfigurableEmitter and OneTimeEmitter differ in field number!");
+//		if(allFieldsConfig.length != allFieldsOneTime.length) System.out.println("Warning: ConfigurableEmitter and OneTimeEmitter differ in field number!");
 	}
 	
 	/**
@@ -428,7 +428,6 @@ public class OneTimeEmitter implements ParticleEmitter{
 			particleX.setFloat(particle, particleX.getFloat(particle) + adjustx);
 			particleY.setFloat(particle, particleY.getFloat(particle) + adjusty);
 		} catch (IllegalArgumentException | IllegalAccessException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

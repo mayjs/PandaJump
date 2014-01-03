@@ -57,11 +57,6 @@ public class GameOverState_Input extends BasicGameState{
 	}
 	
 	@Override
-	public void enter(GameContainer container, StateBasedGame game){
-		System.out.println("enter");
-	}
-	
-	@Override
 	public void keyPressed(int key, char c){
 		switch (key){
 		case Input.KEY_ENTER: confirm(); break;

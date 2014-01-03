@@ -19,9 +19,10 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import de.catchycube.doodleJump.base.MainGame;
 import de.catchycube.doodleJump.debug.DebugInfo;
+import de.catchycube.doodleJump.game.pause.PauseGameState;
 import de.catchycube.doodleJump.gameOver.GameOverState_Counter;
 import de.catchycube.doodleJump.loading.SpritesheetLoader;
-import de.catchycube.doodleJump.transition.FixedAlphaFadeOutTransition;
+import de.catchycube.doodleJump.transition.FixedAlphaFadingTransition;
 
 public class InGameState extends BasicGameState{
 
@@ -117,7 +118,7 @@ public class InGameState extends BasicGameState{
 			}
 			
 			if(player.canExit()){
-				game.enterState(GameOverState_Counter.ID,new FixedAlphaFadeOutTransition(GameOverState_Counter.COLOR_OVERLAY, 1800),null); //TODO: create game over screen
+				game.enterState(GameOverState_Counter.ID,new FixedAlphaFadingTransition(GameOverState_Counter.COLOR_OVERLAY, 1800),null); //TODO: create game over screen
 				return;
 			}
 			if(player.isAlive()){
@@ -226,6 +227,13 @@ public class InGameState extends BasicGameState{
 	
 	public int getAmplifiedScore(){
 		return score;
+	}
+	
+	@Override
+	public void keyPressed(int key, char c) {
+		if(key == PauseGameState.KEY_TO_PAUSEUNPAUSE){
+			game.enterState(PauseGameState.ID, PauseGameState.createLeaveOtherStateTransition(), null);
+		}
 	}
 	
 	@Override

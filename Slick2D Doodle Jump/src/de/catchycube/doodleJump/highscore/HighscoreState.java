@@ -1,7 +1,6 @@
 package de.catchycube.doodleJump.highscore;
 
 
-import java.io.File;
 import java.util.List;
 
 import org.newdawn.slick.Color;

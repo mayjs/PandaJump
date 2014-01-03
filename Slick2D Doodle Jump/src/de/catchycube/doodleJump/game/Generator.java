@@ -3,7 +3,6 @@ package de.catchycube.doodleJump.game;
 import java.util.LinkedList;
 import java.util.Random;
 
-import org.lwjgl.Sys;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.geom.Rectangle;

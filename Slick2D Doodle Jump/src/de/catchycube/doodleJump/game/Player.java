@@ -29,7 +29,7 @@ public class Player implements KeyListener{
 	private Image spriteStanding, spriteSitting, spriteJumping, spriteDead;
 	private boolean useOwnScaling=false,onPlatform=false, sitting=false, alive=false;
 	private Image currentSprite;
-	
+	private Rectangle bounds;
 	
 	private boolean canExit=false;
 	
@@ -41,7 +41,7 @@ public class Player implements KeyListener{
 		this.container = container;
 		
 		SpriteSheet sheet = SpritesheetLoader.getInstance().getSpriteSheet("misc", 64, 64);
-		spriteStanding = sheet.getSprite(0, 0).getSubImage(9, 0, 31, 59);
+		spriteStanding = sheet.getSprite(0, 0).getSubImage(9, 0, 32, 59);
 		spriteJumping = sheet.getSprite(0, 1).getSubImage(1, 0, 47, 54);
 		spriteSitting = sheet.getSprite(1, 1).getSubImage(4, 0, 41, 53);
 		try {
@@ -57,6 +57,7 @@ public class Player implements KeyListener{
 		spriteDead = sheet.getSprite(1, 0).getSubImage(3, 0, 47, 58);
 		
 		currentSprite = spriteStanding;
+		bounds = new Rectangle(0, 0, spriteStanding.getWidth()*gameState.getTextureScaling(), spriteStanding.getHeight()*gameState.getTextureScaling());
 	}
 	
 	public void update(GameContainer container, StateBasedGame game, int delta){			
@@ -117,7 +118,7 @@ public class Player implements KeyListener{
 				onPlatform = true;
 				y = p.getHitBounds().getY() + getBounds().getHeight();
 				setCurrentSprite(sitting?spriteSitting:spriteStanding);
-				p.onHit();
+				p.onHit(this);
 			}
 		}
 	}
@@ -141,23 +142,41 @@ public class Player implements KeyListener{
 	}
 	
 	public void setCurrentSprite(Image sprite){
-		x -= (sprite.getWidth() - currentSprite.getWidth())/2f;
-		y += sprite.getHeight() - currentSprite.getHeight();
+//		x -= (sprite.getWidth() - currentSprite.getWidth())/2f;
+//		y += sprite.getHeight() - currentSprite.getHeight();
 		currentSprite = sprite;
 		
 	}
 	
 	public Rectangle getBounds(){
-		return new Rectangle(x, y, currentSprite.getWidth() * getScaling(), currentSprite.getHeight()*getScaling());
+		bounds.setX(x);
+		bounds.setY(y);
+		bounds.setWidth(spriteStanding.getWidth()*gameState.getTextureScaling());
+		bounds.setHeight(spriteStanding.getHeight()*gameState.getTextureScaling());
+		return bounds;
+		//		return new Rectangle(x, y, currentSprite.getWidth() * getScaling(), currentSprite.getHeight()*getScaling());
 	}
 	
 	private float getScaling(){
 		return useOwnScaling?ownScaling:gameState.getTextureScaling();
 	}
 	
+	private Rectangle drawBounds = new Rectangle(0, 0, 1, 1);
 	public void render(GameContainer container, StateBasedGame game, Graphics g){
-		float realY = gameState.getGameScreenBoundings().getHeight() - y + gameState.getCameraHeight();
-		currentSprite.draw(x, realY, getScaling());
+		drawBounds = gameState.calcRenderRect(getBounds());
+		float rx = drawBounds.getX();
+		float ry = drawBounds.getY();
+		rx -= (currentSprite.getWidth()*getScaling() - drawBounds.getWidth())/2;
+		ry -= (currentSprite.getHeight()*getScaling() - drawBounds.getHeight())/2;
+		
+		
+//		currentSprite.draw(drawBounds.getX(), gameState.getGameScreenBoundings().getHeight() - drawBounds.getY() + gameState.getCameraHeight(), gameState.getTextureScaling());
+		currentSprite.draw(rx,ry,gameState.getTextureScaling());
+		
+		//DEBUG
+//		Rectangle r = gameState.calcRenderRect(getBounds());
+//		g.setColor(Color.red);
+//		g.drawRect(r.getX(), r.getY(), r.getWidth(), r.getHeight());
 	}
 
 	@Override

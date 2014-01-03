@@ -13,7 +13,8 @@ public class BreakingPlatform extends Platform{
 	}
 	
 	@Override
-	public void onHit(){
+	public void onHit(Player p){
+		super.onHit(p);
 		hitCounterEnabled = true;
 	}
 	

@@ -12,17 +12,12 @@ public class DebugInfo {
 	private int gapV, gapH, width, height;
 	private Font font;
 	private Object[][][] debugRenderings;
-	private StateBasedGame game;
-	private GameContainer container;
 	
 	public DebugInfo(int width, int height, int gapV, int gapH, StateBasedGame game, GameContainer con){
 		this.gapH = gapH;
 		this.gapV = gapV;
 		this.width = width;
 		this.height = height;
-		
-		this.game = game;
-		this.container = con;
 		
 		font = con.getDefaultFont();
 		

@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.newdawn.slick.Animation;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Font;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -12,6 +13,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.TrueTypeFont;
 import org.newdawn.slick.geom.Rectangle;
+import org.newdawn.slick.particles.ParticleSystem;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
@@ -42,6 +44,8 @@ public class InGameState extends BasicGameState{
 	
 	private LinkedList<Integer[]> placesInDebugToClear = new LinkedList<Integer[]>();
 	
+	private ParticleSystem system;
+	
 	@Override
 	public void init(GameContainer container, StateBasedGame game)
 			throws SlickException {
@@ -51,6 +55,14 @@ public class InGameState extends BasicGameState{
 		player.init(container, game, this);
 		generator = new Generator(this);
 		this.game = (MainGame) game;
+		Image defImg = new Image((int)textureScaling,(int)textureScaling);
+		Graphics g = defImg.getGraphics();
+		Graphics.setCurrent(g);
+		g.setColor(Color.white);
+		g.fillRect(0,0, defImg.getWidth(), defImg.getHeight());
+		g.flush();
+		system = new ParticleSystem(defImg);
+		system.setRemoveCompletedEmitters(true);
 	}
 
 	@Override
@@ -71,11 +83,14 @@ public class InGameState extends BasicGameState{
 			String pointString = "Punkte: " + score;
 			font.drawString(gameScreenBoundings.getMaxX()-font.getWidth(pointString), 0, pointString);
 		}
+		system.render();
 	}
 
 	@Override
 	public void update(GameContainer container, StateBasedGame game, int delta)
 			throws SlickException {
+		system.update(delta);
+		
 		for(Platform p : platformsToRemove){
 			platforms.remove(p);
 		}		
@@ -114,6 +129,9 @@ public class InGameState extends BasicGameState{
 					scrollSpeed = constantScrollSpeed;
 				} else scrollSpeed = 0;
 				cameraHeight+=scrollSpeed;
+				for(Platform p : platforms){
+					p.adjustY(scrollSpeed);
+				}
 			}
 			player.update(container, game, delta);
 		}
@@ -128,8 +146,9 @@ public class InGameState extends BasicGameState{
 		Image flipped = unflipped.getFlippedCopy(true, false);
 		boolean flip = false;
 		for(int i = 0; ; i++){
-			platforms.add(new Platform(new Rectangle(i*64*textureScaling, 12*textureScaling, 64*textureScaling, 12*textureScaling), 
+			platforms.addLast(new Platform(new Rectangle(i*64*textureScaling, 12*textureScaling, 64*textureScaling, 12*textureScaling), 
 					flip?flipped:unflipped,this));
+			system.addEmitter(platforms.getLast());
 			if((i+1)*64*textureScaling > gameScreenBoundings.getWidth()) break;
 			flip = !flip;
 		}		
@@ -194,6 +213,7 @@ public class InGameState extends BasicGameState{
 	
 	public void addPlatform(Platform p){
 		platforms.add(p);
+		system.addEmitter(p);
 	}
 	
 	public void removePlatform(Platform p){
@@ -210,16 +230,27 @@ public class InGameState extends BasicGameState{
 	
 	@Override
 	public void enter(GameContainer container, StateBasedGame game) throws SlickException {
+		placesInDebugToClear.clear();
 		DebugInfo info = this.game.getDebugInfo();
-		Integer[] coordsForPlatCount = info.getFirstFree();
+		
 		try {
+			Integer[] coordsForPlatCount = info.getFirstFree();
 			info.set(coordsForPlatCount[0], coordsForPlatCount[1], new Object[]{"Platformen: ",new Object[]{InGameState.class.getMethod("getPlatformCount"),this}});
+		
+			Integer[] coordsForPartCount = info.getFirstFree();
+			info.set(coordsForPartCount[0], coordsForPartCount[1], new Object[]{"Partikel: ", new Object[]{ParticleSystem.class.getMethod("getParticleCount"),system}});
+			
+			Integer[] coordsForEmitterCount = info.getFirstFree();
+			info.set(coordsForEmitterCount[0], coordsForEmitterCount[1], 
+					new Object[]{"Emitter: ", new Object[]{ParticleSystem.class.getMethod("getEmitterCount"),system}});
+			
+			placesInDebugToClear.add(coordsForPlatCount);
+			placesInDebugToClear.add(coordsForPartCount);
+			placesInDebugToClear.add(coordsForEmitterCount);
 		} catch (NoSuchMethodException | SecurityException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		placesInDebugToClear.clear();
-		placesInDebugToClear.add(coordsForPlatCount);
+		}	
 	}
 	
 	@Override
@@ -232,5 +263,9 @@ public class InGameState extends BasicGameState{
 	
 	public int getPlatformCount(){
 		return platforms.size();
+	}
+	
+	public ParticleSystem getParticleSystem(){
+		return system;
 	}
 }

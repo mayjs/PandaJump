@@ -3,10 +3,8 @@ package de.catchycube.doodleJump.game;
 import java.util.HashMap;
 
 import org.newdawn.slick.Animation;
-import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SpriteSheet;
-import org.newdawn.slick.state.StateBasedGame;
 
 import de.catchycube.doodleJump.loading.SpritesheetLoader;
 

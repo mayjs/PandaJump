@@ -4,16 +4,14 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Font;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.MouseListener;
 import org.newdawn.slick.TrueTypeFont;
 import org.newdawn.slick.geom.Rectangle;
-import org.newdawn.slick.particles.ConfigurableEmitter;
 import org.newdawn.slick.state.StateBasedGame;
-import org.newdawn.slick.util.FontUtils;
 
 import de.catchycube.doodleJump.loading.SpritesheetLoader;
+import de.catchycube.doodleJump.particles.custom.OneTimeEmitter;
 
 public class MainMenuButton implements MouseListener{
 	private MainMenu menu;
@@ -23,11 +21,9 @@ public class MainMenuButton implements MouseListener{
 	private Font font;
 	private Color colorNotHovered = Color.white, colorHovered = Color.red;
 	private MainMenuButton alignButton;
-	private Image hoverImage;
-	
 	private boolean hovered = false;
 	
-	private ConfigurableEmitter emitter;
+	private OneTimeEmitter[] emitters=new OneTimeEmitter[0];
 	
 	public MainMenuButton(MainMenu menu, String text, String command, float xOffset, float yOffset, GameContainer container){
 		this.menu = menu;
@@ -40,11 +36,13 @@ public class MainMenuButton implements MouseListener{
 		font = new TrueTypeFont(new java.awt.Font("verdana", java.awt.Font.BOLD, 20), true);
 		this.createBoundings();
 		
-		container.getInput().addMouseListener(this);
+		container.getInput().addMouseListener(this);	
+	}
+	
+	public MainMenuButton(MainMenu menu, String text, String command, float xOffset, float yOffset, GameContainer container, OneTimeEmitter baseEmitter){
+		this(menu,text,command,xOffset,yOffset,container);
 		
-		hoverImage = SpritesheetLoader.getInstance().getSpriteSheet("misc", 64,64).getSprite(3, 1);
-		
-		
+		createEmitters(baseEmitter);
 	}
 	
 	public MainMenuButton(MainMenu menu, String text, String command,
@@ -53,6 +51,26 @@ public class MainMenuButton implements MouseListener{
 		this(menu,text,command,xOffset,yOffset,container);
 		this.alignButton = alignButton;
 		createBoundings();
+	}
+	
+	public MainMenuButton(MainMenu menu, String text, String command,
+			MainMenuButton alignButton, float xOffset, float yOffset, GameContainer container, OneTimeEmitter baseEmitter){
+		
+		this(menu,text,command,xOffset,yOffset,container);
+		this.alignButton = alignButton;
+		createBoundings();
+		createEmitters(baseEmitter);
+	}
+	
+	private void createEmitters(OneTimeEmitter baseEmitter){
+		OneTimeEmitter emitter1 = baseEmitter.duplicate();
+		emitter1.setPosition(this.bounds.getX()-10f,this.bounds.getCenterY(),false);
+		OneTimeEmitter emitter2 = baseEmitter.duplicate();
+		emitter2.setPosition(this.bounds.getMaxX()+10f,this.bounds.getCenterY(),false);
+		emitters = new OneTimeEmitter[]{emitter1,emitter2};
+		
+		for(OneTimeEmitter o : emitters)
+			menu.getParticleSystem().addEmitter(o);
 	}
 
 	public MainMenuButton(MainMenu menu, String text, String command,
@@ -130,8 +148,14 @@ public class MainMenuButton implements MouseListener{
 
 	@Override
 	public void mouseMoved(int oldx, int oldy, int newx, int newy) {
-		if(bounds.contains(newx, newy))
-			hovered = true;
+		if(bounds.contains(newx, newy)){
+			if(!hovered){
+				hovered = true;
+				for(OneTimeEmitter o : emitters){
+					o.spawn(menu.getParticleSystem());
+				}
+			}
+		}
 		else
 			hovered = false;
 	}

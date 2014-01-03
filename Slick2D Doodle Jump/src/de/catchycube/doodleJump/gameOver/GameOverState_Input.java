@@ -1,7 +1,5 @@
 package de.catchycube.doodleJump.gameOver;
 
-import java.lang.reflect.Field;
-
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Font;
 import org.newdawn.slick.GameContainer;
@@ -12,12 +10,9 @@ import org.newdawn.slick.TrueTypeFont;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.GameState;
 import org.newdawn.slick.state.StateBasedGame;
-import org.newdawn.slick.state.transition.FadeInTransition;
-import org.newdawn.slick.state.transition.FadeOutTransition;
 
 import de.catchycube.doodleJump.base.MainMenu;
 import de.catchycube.doodleJump.highscore.HighscoreState;
-import de.catchycube.doodleJump.transition.FixedAlphaFadeOutTransition;
 
 public class GameOverState_Input extends BasicGameState{
 	public final static int ID = 3;

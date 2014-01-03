@@ -18,7 +18,6 @@ public class GameOverState_Counter extends BasicGameState{
 	
 	public static Color COLOR_OVERLAY= new Color(0, 0, 0, 0.7f);
 	
-	private float scoreFactor = 0.1f;
 	private int updateCounter, updateAt=40;
 	private int scoreToRender, scoreCounterTime=3400, scoreStep;
 	protected int totalScore;

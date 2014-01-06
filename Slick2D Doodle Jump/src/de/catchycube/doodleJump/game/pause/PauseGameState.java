@@ -18,7 +18,7 @@ import de.catchycube.doodleJump.transition.FixedAlphaFadingTransition;
 
 public class PauseGameState extends BasicGameState{
 	
-	public static int fadeTime = 1800, KEY_TO_PAUSEUNPAUSE=Input.KEY_P;
+	public static int fadeTime = 900, KEY_TO_PAUSEUNPAUSE=Input.KEY_P;
 	public static final int ID=5;
 	
 	private Color textColor=Color.white;

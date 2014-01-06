@@ -57,7 +57,6 @@ public class FixedAlphaFadingTransition implements Transition{
 		color.a += delta * ((targetAlpha - beginAlpha) / fadeTime);
 		if (isComplete()) {
 			color.a = targetAlpha;
-			System.out.println("Complete");
 		}
 	}
 }

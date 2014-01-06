@@ -19,6 +19,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import de.catchycube.doodleJump.base.MainGame;
 import de.catchycube.doodleJump.debug.DebugInfo;
+import de.catchycube.doodleJump.game.generator.Generator;
 import de.catchycube.doodleJump.game.pause.PauseGameState;
 import de.catchycube.doodleJump.gameOver.GameOverState_Counter;
 import de.catchycube.doodleJump.loading.SpritesheetLoader;
@@ -118,7 +119,7 @@ public class InGameState extends BasicGameState{
 			}
 			
 			if(player.canExit()){
-				game.enterState(GameOverState_Counter.ID,new FixedAlphaFadingTransition(GameOverState_Counter.COLOR_OVERLAY, 1800),null); //TODO: create game over screen
+				game.enterState(GameOverState_Counter.ID,new FixedAlphaFadingTransition(GameOverState_Counter.COLOR_OVERLAY, 1800),null);
 				return;
 			}
 			if(player.isAlive()){
@@ -256,7 +257,6 @@ public class InGameState extends BasicGameState{
 			placesInDebugToClear.add(coordsForPartCount);
 			placesInDebugToClear.add(coordsForEmitterCount);
 		} catch (NoSuchMethodException | SecurityException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}	
 	}

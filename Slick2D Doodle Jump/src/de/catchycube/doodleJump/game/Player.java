@@ -24,10 +24,11 @@ public class Player implements KeyListener{
 	private float ySpeed, gravitation=0.25f, movement, constantMovement=10f,
 			maxSpeed=12.5f,minSpeed=-10f,
 			ownScaling=1f;
-	private float x, y;
+	private float x, y, platformXOffset;
 	private int jumpCounter, jumpAt=5;
 	private Image spriteStanding, spriteSitting, spriteJumping, spriteDead;
 	private boolean useOwnScaling=false,onPlatform=false, sitting=false, alive=false;
+	private Platform platform;
 	private Image currentSprite;
 	private Rectangle bounds;
 	
@@ -81,6 +82,7 @@ public class Player implements KeyListener{
 				}
 			}
 		} else if(onPlatform && alive){
+			checkPlatformChanges();
 			if(!sitting && !container.getInput().isKeyDown(Input.KEY_LCONTROL)){
 				jumpCounter++;
 				if(jumpCounter >= jumpAt){
@@ -91,6 +93,25 @@ public class Player implements KeyListener{
 				}
 			}
 		}
+	}
+	
+	private void checkPlatformChanges(){
+		if(platform != null){
+			if(!platform.applyPlayerCollision()){
+				onPlatform = false;
+				platform = null;
+			} else if(platform.movePlayerWithPlatform()){ //TODO: Also move the y coordinate
+				float newXOffset = calculateXOffset(platform);
+				if(newXOffset != platformXOffset){
+					x += newXOffset - platformXOffset;
+					platformXOffset = newXOffset;
+				}
+			}
+		}
+	}
+	
+	private float calculateXOffset(Platform p){
+		return p.getHitBounds().getX() - getBounds().getX();
 	}
 	
 	private void checkDeath(){
@@ -113,12 +134,14 @@ public class Player implements KeyListener{
 		myBounds.setHeight(myBounds.getHeight()*0.1f);
 		
 		for(Platform p : platforms){
-			if(myBounds.intersects(p.getReCalculatedHitBounds(gameState)) && ySpeed < 0){
+			if(p.applyPlayerCollision() && myBounds.intersects(p.getReCalculatedHitBounds(gameState)) && ySpeed < 0){
 				ySpeed = 0;
 				onPlatform = true;
 				y = p.getHitBounds().getY() + getBounds().getHeight();
 				setCurrentSprite(sitting?spriteSitting:spriteStanding);
 				p.onHit(this);
+				platform = p;
+				platformXOffset = calculateXOffset(platform);
 			}
 		}
 	}

@@ -28,4 +28,9 @@ public class BreakingPlatform extends Platform{
 			}
 		}
 	}
+	
+	@Override
+	public boolean applyPlayerCollision(){
+		return hitCounter < hitCounterMax;
+	}
 }

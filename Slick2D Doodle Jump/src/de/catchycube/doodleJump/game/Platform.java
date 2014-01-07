@@ -167,4 +167,12 @@ public class Platform implements ParticleEmitter{
 	public void adjustY(float adjustment){
 		adjustY += adjustment;
 	}
+	
+	public boolean movePlayerWithPlatform(){
+		return false;
+	}
+	
+	public boolean applyPlayerCollision(){
+		return true;
+	}
 }

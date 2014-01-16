@@ -3,6 +3,7 @@ package de.catchycube.doodleJump.base;
 import java.io.File;
 
 import org.newdawn.slick.AppGameContainer;
+import org.newdawn.slick.AppletGameContainer.Container;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
@@ -72,7 +73,13 @@ public class MainGame extends StateBasedGame{
 	}
 	
 	public static void main(String[] args) throws SlickException{
-		AppGameContainer agc = new AppGameContainer(new MainGame("Doodle Jump"), xRes, (int)(yScale * xRes), false);
+		AppGameContainer agc = new AppGameContainer(new MainGame("Doodle Jump"));
+		
+		int yRes = agc.getScreenHeight() - 100;
+		int xRes =(int)( yRes / yScale);
+		
+		agc.setDisplayMode(xRes, yRes, false);
+		
 		System.out.println("Running at " + agc.getWidth() + "x" + agc.getHeight());
 		agc.setShowFPS(false);
 		

@@ -11,6 +11,7 @@ import org.newdawn.slick.geom.Rectangle;
 
 import de.catchycube.doodleJump.game.BreakingPlatform;
 import de.catchycube.doodleJump.game.InGameState;
+import de.catchycube.doodleJump.game.MovingPlatform;
 import de.catchycube.doodleJump.game.Platform;
 import de.catchycube.doodleJump.game.Player;
 import de.catchycube.doodleJump.loading.SpritesheetLoader;
@@ -26,7 +27,7 @@ public class Generator {
 	private Biome currentBiome, baseBiome;
 	private Random rnd;
 	
-	protected static Image solidPlatform, breakingPlatform;
+	protected static Image solidPlatform, breakingPlatform, movingPlatform;
 
 	public Generator(InGameState state){
 		gameState = state;
@@ -38,6 +39,7 @@ public class Generator {
 		SpriteSheet sheet = SpritesheetLoader.getInstance().getSpriteSheet("misc", 64, 64);
 		solidPlatform = sheet.getSprite(2, 1).getSubImage(8, 41, 48, 12);
 		breakingPlatform = sheet.getSprite(3,0).getSubImage(6, 42, 52, 10);
+		movingPlatform = sheet.getSprite(2, 0).getSubImage(0, 41, 64, 12);
 		
 		rnd = new Random();
 		
@@ -45,6 +47,7 @@ public class Generator {
 		biomes = new LinkedList<Biome>();
 		
 		biomes.add(new BreakablePlatformsBiome(gameState, this, rnd));
+		biomes.add(new MovingPlatformBiome(state, this, rnd));
 	}
 	
 	public Generator(long seed, InGameState state){
@@ -117,5 +120,13 @@ public class Generator {
 		platformBoundings.setHeight(platformThickness - 2*gameState.getTextureScaling());
 		platformBoundings.setY(platformBoundings.getY() + gameState.getTextureScaling());
 		return new BreakingPlatform(platformBoundings,breakingPlatform,gameState);
+	}
+	
+	protected Platform createMovingPlatform(float x, float y, float minX, float maxX, float speed){
+		Rectangle platformBoundings = new Rectangle(x, y, 0, 0);
+		platformBoundings.setWidth(movingPlatform.getWidth() * gameState.getTextureScaling());
+		platformBoundings.setHeight(movingPlatform.getHeight() * gameState.getTextureScaling());
+		
+		return new MovingPlatform(platformBoundings, movingPlatform, gameState, minX, maxX, speed);
 	}
 }

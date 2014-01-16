@@ -104,7 +104,6 @@ public class Player implements KeyListener{
 				float newXOffset = calculateXOffset(platform);
 				if(newXOffset != platformXOffset){
 					x += newXOffset - platformXOffset;
-					platformXOffset = newXOffset;
 				}
 			}
 		}

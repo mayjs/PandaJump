@@ -56,7 +56,7 @@ public class Platform implements ParticleEmitter{
 		return c;
 	}
 	
-	private int random(int min, int max){
+	protected int random(int min, int max){
 		return min + rnd.nextInt(max - min + 1);
 	}
 	

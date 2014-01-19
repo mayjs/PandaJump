@@ -42,6 +42,7 @@ public class InGameState extends BasicGameState{
 	private float scoreFactor=0.1f;
 	private Generator generator;
 	private List<Platform> platformsToRemove = new LinkedList<Platform>();
+	private LinkedList<Sprite> sprites = new LinkedList<Sprite>();
 	private MainGame game;
 	
 	private LinkedList<Integer[]> placesInDebugToClear = new LinkedList<Integer[]>();
@@ -73,6 +74,9 @@ public class InGameState extends BasicGameState{
 		for(int i = platforms.size()-1; i >= 0; i--){
 			if(gameScreenBoundings.getHeight() - platforms.get(i).getHitBounds().getY()+cameraHeight > gameScreenBoundings.getHeight()+2) break;
 			platforms.get(i).draw(cameraHeight, this,g);
+		}
+		for(Sprite s : sprites){
+			s.draw(g);
 		}
 		for(Object[] obj : animations){
 			Animation anim = (Animation)obj[0];
@@ -112,6 +116,16 @@ public class InGameState extends BasicGameState{
 		applyCounter+=delta;
 		if(applyCounter > applyMax){			
 			applyCounter -= applyMax;
+			
+			for(Sprite s : sprites){
+				s.update();
+			}
+			for(int i = 0; i < sprites.size(); i++){
+				if(sprites.get(i).canBeRemoved()){
+					sprites.remove(i);
+					i--;
+				}
+			}
 			
 			generator.update();
 			for(Platform p : platforms){
@@ -275,5 +289,13 @@ public class InGameState extends BasicGameState{
 	
 	public ParticleSystem getParticleSystem(){
 		return system;
+	}
+	
+	public void addSprite(Sprite s){
+		sprites.add(s);
+	}
+	
+	public LinkedList<Sprite> getSprites(){
+		return sprites;
 	}
 }

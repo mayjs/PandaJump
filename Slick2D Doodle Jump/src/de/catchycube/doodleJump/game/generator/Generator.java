@@ -14,6 +14,7 @@ import de.catchycube.doodleJump.game.InGameState;
 import de.catchycube.doodleJump.game.MovingPlatform;
 import de.catchycube.doodleJump.game.Platform;
 import de.catchycube.doodleJump.game.Player;
+import de.catchycube.doodleJump.game.Spring;
 import de.catchycube.doodleJump.loading.SpritesheetLoader;
 
 public class Generator {
@@ -27,7 +28,8 @@ public class Generator {
 	private Biome currentBiome, baseBiome;
 	private Random rnd;
 	
-	protected static Image solidPlatform, breakingPlatform, movingPlatform;
+	protected static Image solidPlatform, breakingPlatform, movingPlatform; //platforms
+	protected static Image spring; //sprites
 
 	public Generator(InGameState state){
 		gameState = state;
@@ -40,6 +42,9 @@ public class Generator {
 		solidPlatform = sheet.getSprite(2, 1).getSubImage(8, 41, 48, 12);
 		breakingPlatform = sheet.getSprite(3,0).getSubImage(6, 42, 52, 10);
 		movingPlatform = sheet.getSprite(2, 0).getSubImage(0, 41, 64, 12);
+		
+		SpriteSheet spriteSheet = SpritesheetLoader.getInstance().getSpriteSheet("items", 64, 64);
+		spring = spriteSheet.getSprite(2, 0).getSubImage(5, 27, 40, 32).getScaledCopy(0.5f);
 		
 		rnd = new Random();
 		
@@ -128,5 +133,15 @@ public class Generator {
 		platformBoundings.setHeight(movingPlatform.getHeight() * gameState.getTextureScaling());
 		
 		return new MovingPlatform(platformBoundings, movingPlatform, gameState, minX, maxX, speed);
+	}
+	
+	protected Spring createSpring(float x, float y){
+		Spring s = new Spring(spring, new Rectangle(x, y, spring.getWidth(), spring.getHeight()), gameState, null);
+		
+		return s;
+	}
+	
+	protected int getSpringWidth(){
+		return spring.getWidth();
 	}
 }

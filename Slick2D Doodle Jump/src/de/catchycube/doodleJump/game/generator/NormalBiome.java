@@ -8,6 +8,8 @@ import de.catchycube.doodleJump.game.Platform;
 
 public class NormalBiome extends Biome{
 
+	private float springChance=0.9f;
+	
 	public NormalBiome(InGameState state, Generator generator, Random rnd) {
 		super(state, generator, rnd);
 	}
@@ -46,6 +48,15 @@ public class NormalBiome extends Biome{
 				p.getHitBounds().setX(generator.random(0, (int)(state.getGameScreenBoundings().getWidth()-generator.platformWidth)));
 			}
 		
+			if(rnd.nextFloat()>springChance){
+				float sx = p.getHitBounds().getX() + ((p.getHitBounds().getMaxX() -generator.getSpringWidth() - p.getHitBounds().getX())*rnd.nextFloat());
+				float y = p.getHitBounds().getY() + p.getHitBounds().getHeight();
+				
+				state.addSprite(generator.createSpring(sx, y));
+				
+				System.out.println("Generated spring");
+			}
+			
 			state.addPlatform(p);
 		}
 	}

@@ -21,7 +21,7 @@ public class Player implements KeyListener{
 	
 	private InGameState gameState; GameContainer container;
 	private boolean isAlive=true;
-	private float ySpeed, gravitation=0.25f, movement, constantMovement=10f,
+	private float ySpeed, gravitation=0.25f, xSpeed, constantXSpeed=10f,
 			maxSpeed=12.5f,minSpeed=-10f,
 			ownScaling=1f;
 	private float x, y, platformXOffset;
@@ -67,12 +67,13 @@ public class Player implements KeyListener{
 		}
 //		if(container.getInput().isKeyDown(Input.KEY_SPACE) && onPlatform) sitting = true;
 		
+		applySpriteCollision();
 		
 		if(!onPlatform){
 			y+=ySpeed;
 			applyGravity();
 			if(alive){
-				x+=movement;
+				x+=xSpeed;
 				applySideSwitch();
 				applyCollision();
 				checkDeath();
@@ -91,6 +92,16 @@ public class Player implements KeyListener{
 					onPlatform = false;
 					setCurrentSprite(spriteStanding);
 				}
+			}
+		}
+	}
+	
+	private void applySpriteCollision(){
+		for(Sprite s : gameState.getSprites()){
+			Rectangle srb = gameState.calcRenderRect(s.getBounds());
+			Rectangle rpb = gameState.calcRenderRect(getBounds());
+			if(srb.intersects(rpb) || rpb.contains(srb)){
+				s.onPlayerHit(this);
 			}
 		}
 	}
@@ -146,11 +157,11 @@ public class Player implements KeyListener{
 	}
 	
 	private void applySideSwitch(){
-		if(x >= gameState.getGameScreenBoundings().getWidth() && movement > 0){
+		if(x >= gameState.getGameScreenBoundings().getWidth() && xSpeed > 0){
 			x -= gameState.getGameScreenBoundings().getWidth();
 			x -= this.getBounds().getWidth();
 			x += 5;
-		} else if(x+getBounds().getWidth() <= 0 && movement < 0){
+		} else if(x+getBounds().getWidth() <= 0 && xSpeed < 0){
 			x = gameState.getGameScreenBoundings().getWidth();
 			x -= 5;
 		}
@@ -230,9 +241,9 @@ public class Player implements KeyListener{
 				jumpCounter = 0;
 			}
 		} else if(Input.KEY_RIGHT == key){
-			movement = constantMovement;
+			xSpeed = constantXSpeed;
 		} else if(Input.KEY_LEFT == key){
-			movement = -constantMovement;
+			xSpeed = -constantXSpeed;
 		}
 	}
 
@@ -241,11 +252,11 @@ public class Player implements KeyListener{
 		if(Input.KEY_DOWN == key){
 			sitting = false;
 		}
-		else if((Input.KEY_RIGHT == key && movement == constantMovement)||
-				(Input.KEY_LEFT == key && movement == -constantMovement)){
-			movement = 0;
-			if(container.getInput().isKeyDown(Input.KEY_LEFT)) movement = -constantMovement;
-			if(container.getInput().isKeyDown(Input.KEY_RIGHT)) movement = constantMovement;
+		else if((Input.KEY_RIGHT == key && xSpeed == constantXSpeed)||
+				(Input.KEY_LEFT == key && xSpeed == -constantXSpeed)){
+			xSpeed = 0;
+			if(container.getInput().isKeyDown(Input.KEY_LEFT)) xSpeed = -constantXSpeed;
+			if(container.getInput().isKeyDown(Input.KEY_RIGHT)) xSpeed = constantXSpeed;
 		}
 	}
 	
@@ -266,11 +277,11 @@ public class Player implements KeyListener{
 	}
 
 	public float getConstantMovement() {
-		return constantMovement;
+		return constantXSpeed;
 	}
 
 	public void setConstantMovement(float constantMovement) {
-		this.constantMovement = constantMovement;
+		this.constantXSpeed = constantMovement;
 	}
 
 	public float getMaxSpeed() {
@@ -328,6 +339,23 @@ public class Player implements KeyListener{
 	public boolean isSitting() {
 		return sitting;
 	}
+
+	public float getYSpeed() {
+		return ySpeed;
+	}
+
+	public float getXSpeed() {
+		return xSpeed;
+	}
+
+	public void setYSpeed(float ySpeed) {
+		this.ySpeed = ySpeed;
+	}
+
+	public void setXSpeed(float xSpeed) {
+		this.xSpeed = xSpeed;
+	}
+	
 	
 
 }
